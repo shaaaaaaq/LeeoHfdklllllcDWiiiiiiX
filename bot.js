@@ -361,23 +361,23 @@ client.on("message", msg => {
 });
 
 client.on('message', message => {
-  if (!message.content.startsWith(Sh)) return;
+  if (!message.content.startsWith(L)) return;
   var args = message.content.split(' ').slice(1);
   var argresult = args.join(' ');
   if (message.author.id !== "439187325503930369") return;
 
-if (message.content.startsWith(PREFIX + 'setstream')) {
+if (message.content.startsWith(L + 'setstream')) {
   client.user.setGame(argresult, "https://www.twitch.tv/darkknite55");
 	 console.log('test' + argresult);
     message.channel.sendMessage(`Streaming: **${argresult}`)
 }
 
-if (message.content.startsWith(PREFIX + 'setname')) {
+if (message.content.startsWith(L + 'setname')) {
   client.user.setUsername(argresult).then
 	  message.channel.sendMessage(`Username Changed To **${argresult}**`)
   return message.reply("You Can change the username 2 times per hour");
 }
-if (message.content.startsWith(PREFIX + 'setavatar')) {
+if (message.content.startsWith(L + 'setavatar')) {
   client.user.setAvatar(argresult);
    message.channel.sendMessage(`Avatar Changed Successfully To **${argresult}**`);
 }

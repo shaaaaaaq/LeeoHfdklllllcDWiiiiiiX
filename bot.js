@@ -492,4 +492,16 @@ if (message.content.startsWith(PREFIX + 'setavatar')) {
    message.channel.sendMessage(`Avatar Changed Successfully To **${argresult}**`);
 }
 });
+client.on('message', message => {
+  if (!message.content.startsWith(prefix)) return;
+  const verifed = ["482290701179027459"];
+if (message.content.startsWith(prefix + 'ownerbot')) {
+    if(!message.channel.guild) return;
+if( verifed.some(word => message.author.id.includes(word)) ) {    return message.channel.sendMessage("**انت صاحب البوت **")
+} else {
+   message.reply("**انت لست صاحب البوت**");   
+}
+}
+});
+
 client.login(process.env.BOT_TOKEN);

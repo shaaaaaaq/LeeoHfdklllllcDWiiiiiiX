@@ -102,23 +102,23 @@ client.on('message', async msg => {
 	if (command === `play`) {
 		const voiceChannel = msg.member.voiceChannel;
         
-        if (!voiceChannel) return msg.channel.send("لا أستطيع العثور عليك في أي قناة صوتية!");
+        if (!voiceChannel) return msg.channel.send("I can't find you in any voice channel!");
         
         const permissions = voiceChannel.permissionsFor(msg.client.user);
         
         if (!permissions.has('CONNECT')) {
 
-			return msg.channel.send("ليس لدي أذونات كافية للانضمام إلى قناتك الصوتية!");
+			return msg.channel.send("I don't have enough permissions to join your voice channel!");
         }
         
 		if (!permissions.has('SPEAK')) {
 
-			return msg.channel.send("ليس لدي أذونات كافية للتحدث في قناتك الصوتية!");
+			return msg.channel.send("I don't have enough permissions to speak in your voice channel!");
 		}
 
 		if (!permissions.has('EMBED_LINKS')) {
 
-			return msg.channel.sendMessage("ليس لدي أذونات كافية لإدخال عناوين URL!")
+			return msg.channel.sendMessage("I don't have enough permissions to insert a URLs!")
 		}
 
 		if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
@@ -132,7 +132,7 @@ client.on('message', async msg => {
                 const video2 = await youtube.getVideoByID(video.id); 
                 await handleVideo(video2, msg, voiceChannel, true); 
             }
-			return msg.channel.send(`**${playlist.title}**, فقط تضاف إلى قائمة الانتظار!`);
+			return msg.channel.send(`**${playlist.title}**, Just added to the queue!`);
 		} else {
 
 			try {
@@ -162,7 +162,7 @@ client.on('message', async msg => {
 						});
 					} catch (err) {
 						console.error(err);
-						return msg.channel.send('لا أحد يستجيب لعدد!');
+						return msg.channel.send('No one respone a number!!');
                     }
                     
 					const videoIndex = parseInt(response.first().content);
@@ -171,7 +171,7 @@ client.on('message', async msg => {
 				} catch (err) {
 
 					console.error(err);
-					return msg.channel.send("لم أجد أي نتائج!");
+					return msg.channel.send("I didn't find any results!");
 				}
 			}
 
@@ -181,46 +181,46 @@ client.on('message', async msg => {
         
 	} else if (command === `skip`) {
 
-		if (!msg.member.voiceChannel) return msg.channel.send("يجب أن تكون في قناة Voice لتشغيل أوامر الموسيقى!");
-        if (!serverQueue) return msg.channel.send("ليس هناك قائمة انتظار للتخطي!");
+		if (!msg.member.voiceChannel) return msg.channel.send("You Must be in a Voice channel to Run the Music commands!");
+        if (!serverQueue) return msg.channel.send("There is no Queue to skip!!");
 
-		serverQueue.connection.dispatcher.end('حسنا ، تخطي!');
+		serverQueue.connection.dispatcher.end('Ok, skipped!');
         return undefined;
         
 	} else if (command === `stop`) {
 
-		if (!msg.member.voiceChannel) return msg.channel.send("يجب أن تكون في قناة Voice لتشغيل أوامر الموسيقى!");
-        if (!serverQueue) return msg.channel.send("ليس هناك قائمة انتظار للتوقف!");
+		if (!msg.member.voiceChannel) return msg.channel.send("You Must be in a Voice channel to Run the Music commands!");
+        if (!serverQueue) return msg.channel.send("There is no Queue to stop!!");
         
 		serverQueue.songs = [];
-		serverQueue.connection.dispatcher.end('حسنًا ، تم إيقافه وفصله عن قناة الصوت الخاصة بك');
+		serverQueue.connection.dispatcher.end('Ok, stopped & disconnected from your Voice channel');
         return undefined;
         
 	} else if (command === `vol`) {
 
-		if (!msg.member.voiceChannel) return msg.channel.send("يجب أن تكون في قناة Voice لتشغيل أوامر الموسيقى!");
-		if (!serverQueue) return msg.channel.send('يمكنك فقط استخدام هذا الأمر أثناء تشغيل الموسيقى!');
-        if (!args[1]) return msg.channel.send(`حجم بوت هو **${serverQueue.volume}**`);
+		if (!msg.member.voiceChannel) return msg.channel.send("You Must be in a Voice channel to Run the Music commands!");
+		if (!serverQueue) return msg.channel.send('You only can use this command while music is playing!');
+        if (!args[1]) return msg.channel.send(`The bot volume is **${serverQueue.volume}**`);
         
 		serverQueue.volume = args[1];
         serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 50);
         
-        return msg.channel.send(`حجم الآن هو **${args[1]}**`);
+        return msg.channel.send(`Volume Now is **${args[1]}**`);
 
 	} else if (command === `np`) {
 
-		if (!serverQueue) return msg.channel.send('لا يوجد قائمة انتظار!');
+		if (!serverQueue) return msg.channel.send('There is no Queue!');
 		const embedNP = new Discord.RichEmbed()
-	    .setDescription(`الموسيقى شغالا **${serverQueue.songs[0].title}**`)
+	    .setDescription(`Now playing **${serverQueue.songs[0].title}**`)
         return msg.channel.sendEmbed(embedNP);
         
 	} else if (command === `queue`) {
 		
-		if (!serverQueue) return msg.channel.send('لا يوجد قائمة انتظار!');
+		if (!serverQueue) return msg.channel.send('There is no Queue!!');
 		let index = 0;
 //	//	//
 		const embedqu = new Discord.RichEmbed()
-        .setTitle("أغاني قائمة الانتظار :")
+        .setTitle("The Queue Songs :")
         .setDescription(`
         ${serverQueue.songs.map(song => `${++index}. **${song.title}**`).join('\n')}
 **Now playing :** **${serverQueue.songs[0].title}**`)
@@ -232,13 +232,13 @@ client.on('message', async msg => {
 			serverQueue.connection.dispatcher.pause();
 			return msg.channel.send('Ok, paused');
 		}
-		return msg.channel.send('لا يوجد قائمة انتظار لإيقاف مؤقت!');
+		return msg.channel.send('There is no Queue to Pause!');
 	} else if (command === "resume") {
 
 		if (serverQueue && !serverQueue.playing) {
 			serverQueue.playing = true;
 			serverQueue.connection.dispatcher.resume();
-            return msg.channel.send('حسنا ، استؤنفت!');
+            return msg.channel.send('Ok, resumed!');
             
 		}
 		return msg.channel.send('Queue is empty!');
@@ -300,7 +300,7 @@ function play(guild, song) {
 
 	const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
 		.on('end', reason => {
-			if (reason === 'لا ينتج الدفق بسرعة كافية.') console.log('Song ended.');
+			if (reason === 'Stream is not generating quickly enough.') console.log('Song ended.');
 			else console.log(reason);
 			serverQueue.songs.shift();
 			play(guild, serverQueue.songs[0]);
@@ -341,4 +341,67 @@ client.on('message', message => {
       message.channel.send(helpEmbed);
     }
 });
+client.on("message", msg => {
+  if(msg.content === 'L' + "id") {
+      const embed = new Discord.RichEmbed();
+  embed.addField("🔱| اسم الحساب :", `${msg.author.username}#${msg.author.discriminator}`, true)
+          .addField("🆔| الاي دي :", `${msg.author.id}`, true)
+          .setColor("RANDOM")
+          .setFooter(msg.author.username , msg.author.avatarURL)
+          .setThumbnail(`${msg.author.avatarURL}`)
+          .setTimestamp()
+          .setURL(`${msg.author.avatarURL}`)
+          .addField('📛| الحالة :', `${msg.author.presence.status.toUpperCase()}`, true)
+          .addField('🎲| بلاينج :', `${msg.author.presence.game === null ? "No Game" : msg.author.presence.game.name}`, true)
+          .addField('🏅| الرتب : ', `${msg.member.roles.filter(r => r.name).size}`, true)
+          .addField('📅| تم الانضمام للديسكورد في :', `${msg.createdAt}`,true)
+          .addField('🤖| هل هو بوت ؟', `${msg.author.bot.toString().toUpperCase()}`, true);
+      msg.channel.send({embed: embed})
+  }
+});
+client.on('message', async message => {
+            if(!message.channel.guild) return;
+             if (message.content.startsWith("Lsets")) {
+let args = message.content.split(' ').slice(1).join(' ');
+            let sigMessage = await args;
+            
+            if (sigMessage === "online") {
+                client.user.setStatus("online");
+                message.author.send("Your status was set to online.");
+            }
+            if (sigMessage === "idle") {
+                client.user.setStatus("idle");
+                message.author.send("Your status was set to idle.");
+            }
+            if (sigMessage === "invisible") {
+                client.user.setStatus("invisible");
+                message.author.send("Your status was set to invisible.");
+            }
+            if (sigMessage === "dnd") {
+                client.user.setStatus("dnd");
+                message.author.send("Your status was set to dnd.");
+            }
+            // message.author.send("." + message.content);
+        
+}
+});
+client.on('ready', function(){    
+    var ms = 40000 ;    
+    var setGame = ['I love you there is no one else.'];    
+    var i = -1;    
+    var j = 0;    
+    setInterval(function (){    
+        if( i == -1 ){    
+j = 1;    
+       }    
+        if( i == (setGame.length)-1 ){    
+            j = -1;    
+      }    
+       i = i+j;    
+        client.user.setGame(setGame[i],`http://www.youtube.com/gg`);    
+}, ms);    
+    
+});
+
+
 client.login(process.env.BOT_TOKEN);

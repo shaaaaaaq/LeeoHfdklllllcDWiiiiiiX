@@ -312,7 +312,10 @@ function play(guild, song) {
 }
 
 });
+client.on('ready', () => {
+     client.user.setActivity("...",{type: 'WATCHING'});
 
+});
 
 
 client.login(process.env.BOT_TOKEN);
